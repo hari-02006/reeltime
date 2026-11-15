@@ -138,19 +138,19 @@
         <div class="form-error" id="form-error" role="alert" hidden></div>
         <div class="form-grid">
           <label class="field full-field">Movie name <span class="required-mark">*</span>
-            <input id="title" name="title" type="text" maxlength="120" placeholder="e.g. Interstellar" required>
-            <span class="field-error" data-error-for="title"></span>
+            <input id="title" name="title" type="text" maxlength="120" placeholder="e.g. Interstellar" aria-describedby="title-error" required>
+            <span class="field-error" id="title-error" data-error-for="title"></span>
           </label>
           <label class="field">Genre
             <input id="genre" name="genre" type="text" maxlength="60" placeholder="e.g. Sci-Fi">
           </label>
           <label class="field">Release year
-            <input id="releaseYear" name="releaseYear" type="number" min="1888" placeholder="e.g. 2014">
-            <span class="field-error" data-error-for="releaseYear"></span>
+            <input id="releaseYear" name="releaseYear" type="number" min="1888" step="1" placeholder="e.g. 2014" aria-describedby="releaseYear-error">
+            <span class="field-error" id="releaseYear-error" data-error-for="releaseYear"></span>
           </label>
           <label class="field">Rating <span class="muted-label">(out of 10)</span>
-            <input id="rating" name="rating" type="number" min="1" max="10" step="0.1" placeholder="e.g. 8.5">
-            <span class="field-error" data-error-for="rating"></span>
+            <input id="rating" name="rating" type="number" min="1" max="10" step="0.1" placeholder="e.g. 8.5" aria-describedby="rating-error">
+            <span class="field-error" id="rating-error" data-error-for="rating"></span>
           </label>
           <label class="field">Watch status
             <select id="status" name="status">
@@ -160,8 +160,8 @@
             </select>
           </label>
           <label class="field full-field">Poster image URL
-            <input id="posterUrl" name="posterUrl" type="url" maxlength="2048" placeholder="https://...">
-            <span class="field-error" data-error-for="posterUrl"></span>
+            <input id="posterUrl" name="posterUrl" type="url" maxlength="2048" placeholder="https://..." aria-describedby="posterUrl-error">
+            <span class="field-error" id="posterUrl-error" data-error-for="posterUrl"></span>
           </label>
           <label class="field full-field">Description
             <textarea id="description" name="description" rows="3" maxlength="1000" placeholder="What makes this one worth watching?"></textarea>

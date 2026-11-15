@@ -181,29 +181,55 @@ function openDialog(movie = null) {
 }
 
 function clearFormErrors() {
-  document.querySelectorAll(".field-error").forEach((field) => { field.textContent = ""; });
+  document.querySelectorAll(".field-error").forEach((field) => {
+    field.textContent = "";
+    const input = elements.form.elements[field.dataset.errorFor];
+    input.removeAttribute("aria-invalid");
+    input.closest(".field").classList.remove("has-error");
+  });
+}
+
+function getFieldError(name, value) {
+  if (name === "title" && !value.trim()) return "Please enter a movie name.";
+  if (name === "releaseYear" && value) {
+    const year = Number(value);
+    if (!Number.isInteger(year) || year < 1888 || year > new Date().getFullYear() + 10) {
+      return `Enter a whole year between 1888 and ${new Date().getFullYear() + 10}.`;
+    }
+  }
+  if (name === "rating" && value) {
+    const rating = Number(value);
+    if (!Number.isFinite(rating) || rating < 1 || rating > 10) return "Rating must be between 1 and 10.";
+  }
+  if (name === "posterUrl" && value) {
+    try {
+      if (!["http:", "https:"].includes(new URL(value).protocol)) throw new Error();
+    } catch {
+      return "Enter a valid image URL starting with http:// or https://.";
+    }
+  }
+  return "";
+}
+
+function validateField(name) {
+  const input = elements.form.elements[name];
+  const error = document.querySelector(`[data-error-for="${name}"]`);
+  const message = getFieldError(name, input.value);
+  error.textContent = message;
+  input.setAttribute("aria-invalid", String(Boolean(message)));
+  input.closest(".field").classList.toggle("has-error", Boolean(message));
+  return !message;
 }
 
 function validateForm(data) {
-  clearFormErrors();
-  const errors = {};
-  const title = data.title.trim();
-  if (!title) errors.title = "Please enter a movie name.";
-  if (data.releaseYear && (!Number.isInteger(Number(data.releaseYear)) || Number(data.releaseYear) < 1888 || Number(data.releaseYear) > new Date().getFullYear() + 10)) {
-    errors.releaseYear = `Enter a year between 1888 and ${new Date().getFullYear() + 10}.`;
-  }
-  if (data.rating && (Number(data.rating) < 1 || Number(data.rating) > 10)) errors.rating = "Rating must be between 1 and 10.";
-  if (data.posterUrl) {
-    try {
-      if (!["http:", "https:"].includes(new URL(data.posterUrl).protocol)) throw new Error();
-    } catch {
-      errors.posterUrl = "Enter a valid image URL starting with http:// or https://.";
-    }
-  }
-  Object.entries(errors).forEach(([name, message]) => {
-    document.querySelector(`[data-error-for="${name}"]`).textContent = message;
-  });
-  return Object.keys(errors).length === 0;
+  const fieldNames = ["title", "releaseYear", "rating", "posterUrl"];
+  const valid = fieldNames.map((name) => {
+    const input = elements.form.elements[name];
+    input.value = data[name];
+    return validateField(name);
+  }).every(Boolean);
+  if (!valid) elements.form.querySelector('[aria-invalid="true"]').focus();
+  return valid;
 }
 
 async function saveMovie(event) {
@@ -253,6 +279,13 @@ async function deleteMovie(id) {
 }
 
 elements.form.addEventListener("submit", saveMovie);
+["title", "releaseYear", "rating", "posterUrl"].forEach((name) => {
+  const input = elements.form.elements[name];
+  input.addEventListener("blur", () => validateField(name));
+  input.addEventListener("input", () => {
+    if (input.getAttribute("aria-invalid") === "true") validateField(name);
+  });
+});
 document.querySelector("#open-add-movie").addEventListener("click", () => openDialog());
 document.querySelector("#hero-add-movie").addEventListener("click", () => openDialog());
 document.querySelector("#close-dialog").addEventListener("click", () => elements.dialog.close());

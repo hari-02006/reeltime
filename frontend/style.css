@@ -141,6 +141,8 @@ kbd { display: grid; width: 18px; height: 20px; place-items: center; border: 1px
 .full-field { grid-column: 1 / -1; }
 .field input, .field select, .field textarea { width: 100%; min-width: 0; padding: 10px 11px; border: 1px solid #ffffff15; border-radius: 7px; outline: 0; background: #0c0d14; color: #eeeef5; font-size: 11px; font-weight: 400; transition: border-color .2s; }
 .field input:focus, .field select:focus, .field textarea:focus { border-color: #a580ff9c; }
+.field.has-error input { border-color: #ff7880a8; }
+.field.has-error input:focus { border-color: #ff929b; }
 .field input::placeholder, .field textarea::placeholder { color: #666778; }
 .field textarea { resize: vertical; }
 .required-mark { color: #b38bff; }
